@@ -12,10 +12,11 @@ It doesn't always make sense to configure complex PHP Unit for simple testing
 | --- | --- | --- | --- |
 | Time to install and config | 1 min | 1-2 weeks | 1-2 weeks |
 | Learning curve | 1 day | 1-2 months | 1-2 months |
-| WP CLI support | + | - | - |
 | modern syntax | + | - | + |
+| WP CLI support | + | - | - |
 | simple bootstrap | + | - | - |
 | universal testing for App, Plugin or Theme | + | - | - |
+
 
 # how?
 
