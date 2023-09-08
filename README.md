@@ -56,3 +56,8 @@ function check($x){
 cd ./path/to/wp
 wp tests
 ```
+
+
+# Todo
+- test seeding and import test data
+- test GitHub Actions and auto testings for PRs
