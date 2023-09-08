@@ -8,7 +8,7 @@ inspired by Laravel & https://pestphp.com/
 
 It doesn't always make sense to configure complex PHP Unit for simple testing
 
-| compare | Testeroid | PHPUnit | PestPHP |
+| Comparison | Testeroid | PHPUnit | PestPHP |
 | --- | --- | --- | --- |
 | Time to install and config | 1 min | 1-2 weeks | 1-2 weeks |
 | Learning curve | 1 day | 1-2 months | 1-2 months |
