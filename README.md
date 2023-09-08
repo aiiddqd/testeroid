@@ -1,7 +1,8 @@
 # Testeroid
 
-
 It is simple plugin to getting auto tests and TDD by WP CLI
+
+inspired Laravel & https://pestphp.com/
 
 # why?
 
