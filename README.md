@@ -36,7 +36,7 @@ namespace App\Tests\SomeComponent;
 
 test('smoke test', function(){
 
-    $value = check_data(5);
+    $value = check(5);
 
     if($value === 10){
         return true;
@@ -46,7 +46,7 @@ test('smoke test', function(){
 
 }, 1);
 
-function check_data($x){
+function check($x){
     return $x + 5;
 }
 ```
