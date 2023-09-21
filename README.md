@@ -28,11 +28,52 @@ It doesn't always make sense to configure complex PHP Unit for simple testing
 
 like PestPHP
 
+### feature test example
+
+//file ./tests/SomeComponent.php
+
+namespace App\Tests\SomeComponent;
+
+use function Testeroid\{test, transaction_query};
+
+
+transaction_query('start');
+
+test('simple test', function(){
+
+    $post_data = [
+        'post_title'    => 'test 1',
+        'post_content'  => 'test',
+        'post_status'   => 'publish',
+    ];
+
+    // Insert the post into the database
+    $post_id = wp_insert_post( $post_data );
+    $post = get_post($post_id);
+
+
+
+    if($post->post_title === 'test 1'){
+        return true;
+    } else {
+        return false;
+    }
+
+}, 1);
+
+
+transaction_query('rollback');
+```
+
+
+### unit test example
 ```
 <?php
 //file ./tests/SomeComponent.php
 
 namespace App\Tests\SomeComponent;
+
+use function Testeroid\test;
 
 test('smoke test', function(){
 
@@ -50,6 +91,8 @@ function check($x){
     return $x + 5;
 }
 ```
+
+
 
 ## run
 ```
