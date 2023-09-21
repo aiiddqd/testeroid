@@ -29,7 +29,7 @@ It doesn't always make sense to configure complex PHP Unit for simple testing
 like PestPHP
 
 ### feature test example
-
+```
 //file ./tests/SomeComponent.php
 
 namespace App\Tests\SomeComponent;
