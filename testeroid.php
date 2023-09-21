@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Testeroid
  * Description: TDD and simple auto tests with WP CLI
- * Version: 0.1
+ * Version: 0.2
  */
 
 namespace Testeroid;
@@ -59,5 +59,27 @@ function test($text, $function, $active = false){
             $test_results['fail']++;
             $test_results['fails'][] = $text;
         }    
+    }
+}
+
+/**
+ * like wc_transaction_query()
+ * $type: start, rollback or commit
+ */
+function transaction_query( $type = 'start' ) {
+	global $wpdb;
+
+	$wpdb->hide_errors();
+
+	switch ( $type ) {
+        case 'commit':
+            $wpdb->query( 'COMMIT' );
+            break;
+        case 'rollback':
+            $wpdb->query( 'ROLLBACK' );
+            break;
+        default:
+            $wpdb->query( 'START TRANSACTION' );
+            break;
     }
 }
