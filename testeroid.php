@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Testeroid
  * Description: TDD and simple auto tests with WP CLI
- * Version: 0.2
+ * Version: 0.3
  */
 
 namespace Testeroid;
