@@ -97,7 +97,7 @@ function check($x){
 ## run
 ```
 cd ./path/to/wp
-wp tests
+wp test
 ```
 
 

@@ -10,7 +10,7 @@ namespace Testeroid;
 use WP_CLI;
 
 if(class_exists('WP_CLI')){
-    WP_CLI::add_command( 'tests', function(){
+    WP_CLI::add_command( 'test', function(){
         $results = testing();
         if($results['success'] && empty($results['fails'])){
             WP_CLI::success( 'tests success' );
