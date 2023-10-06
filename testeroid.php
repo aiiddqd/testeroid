@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Testeroid
  * Description: TDD and simple auto tests with WP CLI
- * Version: 0.3
+ * Version: 0.5
  */
 
 namespace Testeroid;
@@ -10,8 +10,10 @@ namespace Testeroid;
 use WP_CLI;
 
 if(class_exists('WP_CLI')){
-    WP_CLI::add_command( 'test', function(){
-        $results = testing();
+    WP_CLI::add_command( 'test', function($terms, $args){
+
+
+        $results = testing($terms, $args);
         if($results['success'] && empty($results['fails'])){
             WP_CLI::success( 'tests success' );
         } else {
@@ -23,7 +25,7 @@ if(class_exists('WP_CLI')){
 
 }
 
-function testing(){
+function testing($terms, $args){
 
     global $test_results;
     
@@ -35,19 +37,37 @@ function testing(){
         ];
     }
 
-    $path_pattern = __DIR__ . '/includes/*.php';
+    $path = __DIR__ . '/includes/';
     if(defined('TESTEROID_TESTS_PATH')){
-        $path_pattern = TESTEROID_TESTS_PATH;
+        $path = trailingslashit(TESTEROID_TESTS_PATH);
     }
 
-    foreach(glob($path_pattern) as $php_include) {
-        require_once($php_include);
+    if(isset($terms[0])){
+        $term = $terms[0];
+        if( str_ends_with($term, '.php')){
+            $path_pattern_test = $path_pattern = trailingslashit($path) . $term;
+            if(file_exists($path_pattern_test)){
+                require_once $path_pattern_test;
+            } else {
+                WP_CLI::error( 'Tests no found: ' . $path_pattern_test, $exit = false );
+            }
+        } else {
+            WP_CLI::error( 'File name shoud be php format. ' . $term, $exit = false );
+        }
+    } else {
+        $path_pattern = trailingslashit($path) . '*.php';
+
+        foreach(glob($path_pattern) as $php_include) {
+            require_once($php_include);
+        }
     }
+
+    
 
     return $test_results;
 }
 
-function test($text, $function, $active = false){
+function test($text, $function, $active = true){
     
     global $test_results;
     
@@ -61,6 +81,7 @@ function test($text, $function, $active = false){
         }    
     }
 }
+
 
 /**
  * like wc_transaction_query()
