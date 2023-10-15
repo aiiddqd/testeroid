@@ -104,3 +104,12 @@ function transaction_query( $type = 'start' ) {
             break;
     }
 }
+
+
+function ddcli(...$vars){
+    foreach($vars as $key => $var){
+        print_r($var, false);
+        echo PHP_EOL;
+    }
+    exit;
+}
