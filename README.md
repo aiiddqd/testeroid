@@ -4,6 +4,8 @@ It is simple plugin to getting auto tests and TDD by WP CLI
 
 inspired by Laravel & https://pestphp.com/
 
+demo https://github.com/wpcraft-ru/wooms/tree/master/tests
+
 # why?
 
 It doesn't always make sense to configure complex PHP Unit for simple testing
