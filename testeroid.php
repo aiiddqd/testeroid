@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Testeroid
  * Description: TDD and simple auto tests with WP CLI
- * Version: 0.5
+ * Version: 0.7
  */
 
 namespace Testeroid;
@@ -67,18 +67,24 @@ function testing($terms, $args){
     return $test_results;
 }
 
+
 function test($text, $function, $active = true){
     
     global $test_results;
     
     if($active){
-        $result = call_user_func($function);
-        if($result){
-            $test_results['success']++;
-        } else {
+        try {
+            $result = call_user_func($function);
+            if($result){
+                $test_results['success']++;
+            } else {
+                $test_results['fail']++;
+                $test_results['fails'][] = $text;
+            }
+        } catch (\Throwable $th) {
             $test_results['fail']++;
-            $test_results['fails'][] = $text;
-        }    
+            $test_results['fails'][] = $text . '; ' . $th->getMessage() . '; ' . $th->getFile() . ':' . $th->getLine();
+        }   
     }
 }
 
