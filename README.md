@@ -23,7 +23,7 @@ It doesn't always make sense to configure complex PHP Unit for simple testing
 # how?
 
 ## installation
-- install plugin `wp plugin install https://github.com/uptimizt/testeroid/archive/main.zip --activate`
+- install plugin `wp plugin install https://github.com/uptimizt/testeroid/archive/main.zip --activate --force`
 - make folder `tests` in plugin, or theme, or for whole site
 - set constant `TESTEROID_TESTS_PATH` in wp-config.php to path of tests 
   - exmaple `define('TESTEROID_TESTS_PATH', __DIR__ . "/path/to/tests/")`
