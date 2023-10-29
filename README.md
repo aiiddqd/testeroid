@@ -6,6 +6,8 @@ inspired by Laravel & https://pestphp.com/
 
 demo https://github.com/wpcraft-ru/wooms/tree/master/tests
 
+support and questions https://github.com/uptimizt/testeroid/issues
+
 # why?
 
 It doesn't always make sense to configure complex PHP Unit for simple testing
