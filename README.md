@@ -107,6 +107,6 @@ wp test
 
 
 # Todo
-- test seeding and import test data
-- test GitHub Actions and auto testings for PRs
-- improve CLI UI
+- [x] test seeding and import test data
+- [x] improve CLI UI
+- [ ] test GitHub Actions and auto testings for PRs
