@@ -22,17 +22,18 @@ if ( class_exists( 'WP_CLI' ) ) {
         if ( $results['success'] && empty( $results['fails'] ) ) {
 			WP_CLI::success( 'tests success' );
 		} else {
-			WP_CLI::error( 'tests fails', $exit = false );
+			WP_CLI::error( 'tests fails', $exit = true );
 		}
-
-	} );
-
+	});
 }
 
 function testing( $terms, $args ) {
 
 	global $test_results, $testerod_tests;
 
+	if(isset($args['filter'])){
+		$text = $args['filter'];
+	}
 
 	$path = __DIR__ . '/includes/';
 	if ( defined( 'TESTEROID_TESTS_PATH' ) ) {
@@ -77,6 +78,12 @@ function testing( $terms, $args ) {
 	foreach ( $testerod_tests as $test ) {
 		$progress->tick();
 
+		if(isset($text)){
+			if($text !== $test['text']){
+				continue;
+			}
+		}
+
 		if ( $test['active'] ) {
 
 			try {
@@ -99,15 +106,11 @@ function testing( $terms, $args ) {
 			} catch (Throwable $th) {
 				$test_results['fail']++;
 				$test_results['fails'][] = $test['text'] . '; ' . $th->getMessage() . '; ' . $th->getFile() . ':' . $th->getLine();
-
-                
 			}
 		}
 	}
 
 	$progress->finish();
-
-	// ddcli($testerod_tests);
 
 
 	return $test_results;
