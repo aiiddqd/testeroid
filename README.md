@@ -34,6 +34,8 @@ add_filter('testeroid_tests', function($tests){
         'callback' => function(){
             return true;
         }
+        'active' => true, // optional, default = false
+        'group' => 'default' // optional
     ];
     return $tests;
 });
