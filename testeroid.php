@@ -9,10 +9,8 @@ namespace Testeroid;
 
 use WP_CLI, Throwable;
 
-
 if (class_exists('WP_CLI')) {
 
-	// WP_CL
 	WP_CLI::add_command('testeroid', function ($terms, $args) {
 
 		WP_CLI::log('Testeroid is running');
@@ -29,24 +27,27 @@ if (class_exists('WP_CLI')) {
 		$tests = apply_filters('testeroid_tests', []);
 		$results = [];
 
-		// var_dump($terms, $args); exit;
 		if (isset($args['case'])) {
-			//check $tests - has item with $args['case']
-			$testSingle = array_filter($tests, function ($test) use ($args) {
-				if($test['case'] === $args['case']){
-					return $test;
+			$testSingle = null;
+			foreach ($tests as $test) {
+				if ($test['case'] === $args['case']) {
+					$testSingle = $test;
+					break;
 				}
-			});
-			$results[] = handleTest($testSingle[0]);
+			}
+			if($testSingle){
+				$results[] = handleTest($testSingle);
+			}
 
 		} else {
 
 			foreach ($tests as $test) {
-				WP_CLI::log($test['case']);
+				if (empty($test['active'])) {
+					continue;
+				}
+
 				if (is_callable($test['callback'])) {
-
 					$results[] = handleTest($test);
-
 				}
 			}
 		}
