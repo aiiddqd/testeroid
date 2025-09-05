@@ -35,7 +35,7 @@ if (class_exists('WP_CLI')) {
 					break;
 				}
 			}
-			if($testSingle){
+			if ($testSingle) {
 				$results[] = handleTest($testSingle);
 			}
 
@@ -65,6 +65,7 @@ if (class_exists('WP_CLI')) {
 
 	});
 
+	// @todo - delete
 	WP_CLI::add_command('test', function ($terms, $args) {
 		$results = testing($terms, $args);
 
@@ -81,6 +82,7 @@ if (class_exists('WP_CLI')) {
 		}
 	});
 }
+
 
 function handleTest($test)
 {
@@ -126,6 +128,8 @@ function handleTest($test)
 	}
 }
 
+
+// @todo - delete
 function testing($terms, $args)
 {
 
