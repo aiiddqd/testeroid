@@ -113,6 +113,8 @@ function handleTest($test)
 				];
 			}
 
+		} else {
+			throw new \Exception('Callback is not callable');
 		}
 	} catch (Throwable $e) {
 		return [
