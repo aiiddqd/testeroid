@@ -28,15 +28,22 @@ if (class_exists('WP_CLI')) {
 		$results = [];
 
 		if (isset($args['case'])) {
-			$testSingle = null;
-			foreach ($tests as $test) {
-				if ($test['case'] === $args['case']) {
-					$testSingle = $test;
-					break;
+			if (isset($tests[$args['case']])) {
+				if (is_callable($tests[$args['case']])) {
+					$testSingle = $tests[$args['case']];
+					$case = $args['case'];
+					
+				} else {
+					$testSingle = $tests[$args['case']]['callback'];
+					$case = $args['case'];
 				}
+			} else {
+				WP_CLI::error('Test case not found: '.$args['case'], $exit = false);
+				return;
 			}
+
 			if ($testSingle) {
-				$results[] = handleTest($testSingle);
+				$results[] = handleTest($testSingle, $case ?? null);
 			}
 
 		} else {
@@ -84,7 +91,7 @@ if (class_exists('WP_CLI')) {
 }
 
 
-function handleTest($test)
+function handleTest($test, $case = null)
 {
 	/**
 	 * @var string $test['case']
@@ -93,32 +100,39 @@ function handleTest($test)
 	 * @var string $test['group']
 	 * @var array $test['debug_backtrace']
 	 */
-	WP_CLI::log($test['case']);
+	if ($case) {
+		WP_CLI::log($case);
+	} else {
+		// WP_CLI::log($test['case']);
+	}
 	try {
-		if (is_callable($test['callback'])) {
+		if (is_callable($test)) {
+			$resultOfTest = $test();
+		} elseif (is_callable($test['callback'])) {
 			$resultOfTest = $test['callback']();
-			if ($resultOfTest) {
-				return [
-					'case' => $test['case'],
-					'message' => $resultOfTest === true ? 'ok' : $resultOfTest,
-					'group' => $test['group'] ?? 'default',
-					'success' => true
-				];
-			} else {
-				return [
-					'case' => $test['case'],
-					'message' => 'fail',
-					'group' => $test['group'] ?? 'default',
-					'success' => false
-				];
-			}
-
 		} else {
 			throw new \Exception('Callback is not callable');
 		}
+
+		if ($resultOfTest) {
+			return [
+				'case' => $case ?? $test['case'],
+				'message' => $resultOfTest === true ? 'ok' : $resultOfTest,
+				'group' => $test['group'] ?? 'default',
+				'success' => true
+			];
+		} else {
+			return [
+				'case' => $case ?? $test['case'],
+				'message' => $resultOfTest,
+				'group' => $test['group'] ?? 'default',
+				'success' => false
+			];
+		}
+
 	} catch (Throwable $e) {
 		return [
-			'case' => $test['case'],
+			'case' => $case ?? $test['case'],
 			'message' => $e->getMessage(),
 			'file' => $e->getFile(),
 			'line' => $e->getLine(),
