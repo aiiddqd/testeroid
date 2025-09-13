@@ -108,8 +108,10 @@ function handleTest($test, $case = null)
 	try {
 		if (is_callable($test)) {
 			$resultOfTest = $test();
+			$group = 'default';
 		} elseif (is_callable($test['callback'])) {
 			$resultOfTest = $test['callback']();
+			$group = $test['group'] ?? 'default';
 		} else {
 			throw new \Exception('Callback is not callable');
 		}
@@ -118,14 +120,14 @@ function handleTest($test, $case = null)
 			return [
 				'case' => $case ?? $test['case'],
 				'message' => $resultOfTest === true ? 'ok' : $resultOfTest,
-				'group' => $test['group'] ?? 'default',
+				'group' => $group,
 				'success' => true
 			];
 		} else {
 			return [
 				'case' => $case ?? $test['case'],
 				'message' => $resultOfTest,
-				'group' => $test['group'] ?? 'default',
+				'group' => $group,
 				'success' => false
 			];
 		}
@@ -137,7 +139,7 @@ function handleTest($test, $case = null)
 			'file' => $e->getFile(),
 			'line' => $e->getLine(),
 			'trace' => $e->getTraceAsString(),
-			'group' => $test['group'] ?? 'default',
+			'group' => $group,
 			'success' => false
 		];
 
