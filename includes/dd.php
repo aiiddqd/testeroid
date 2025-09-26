@@ -22,8 +22,8 @@ if (! \function_exists('dd')) {
 
 		//get backtrace
 		$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-		if (isset($bt[0])) {
-			$caller = $bt[0];
+		if (isset($bt[1])) {
+			$caller = $bt[1];
 			echo '<pre>';
 			echo "\nCalled from {$caller['file']}:{$caller['line']}\n";
 			echo '</pre>';
@@ -35,6 +35,7 @@ function dd_only_admins(...$args)
 {
 	if (is_user_logged_in() && current_user_can('manage_options')) {
 		dd(...$args);
+		exit;
 	}
 }
 
