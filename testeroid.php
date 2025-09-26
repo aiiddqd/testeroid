@@ -2,12 +2,16 @@
 /**
  * Plugin Name: @ Testeroid
  * Description: Simple auto tests & TDD with WP CLI
- * Version: 0.9.250917
+ * Version: 0.9.250926
  */
 
 namespace Testeroid;
 
 use WP_CLI, Throwable;
+
+if (! function_exists('dd')) {
+	require_once __DIR__.'/includes/dd.php';
+}
 
 if (class_exists('WP_CLI')) {
 
@@ -32,7 +36,7 @@ if (class_exists('WP_CLI')) {
 				if (is_callable($tests[$args['case']])) {
 					$testSingle = $tests[$args['case']];
 					$case = $args['case'];
-					
+
 				} else {
 					$testSingle = $tests[$args['case']]['callback'];
 					$case = $args['case'];
@@ -72,21 +76,10 @@ if (class_exists('WP_CLI')) {
 
 	});
 
-	// @todo - delete
 	WP_CLI::add_command('test', function ($terms, $args) {
-		$results = testing($terms, $args);
+		// $results = testing($terms, $args);
 
-		WP_CLI::log(sprintf('success: %s', $results['success']));
-		if (! empty($results['fails'])) {
-			WP_CLI::log(sprintf('fails: %s', $results['fail']));
-			WP_CLI::error_multi_line($results['fails']);
-		}
-
-		if ($results['success'] && empty($results['fails'])) {
-			WP_CLI::success('tests success');
-		} else {
-			WP_CLI::error('tests fails', $exit = true);
-		}
+		//replace to testeroid_tests --case=""
 	});
 }
 
@@ -147,7 +140,7 @@ function handleTest($test, $case = null)
 }
 
 
-// @todo - delete
+// @todo - delete or replace to testeroid_tests
 function testing($terms, $args)
 {
 
