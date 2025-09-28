@@ -29,9 +29,30 @@ if (class_exists('WP_CLI')) {
 	});
 
 	WP_CLI::add_command('ttest', function ($terms, $args) {
-		dd($terms, $args);
+		$case = $terms[0] ?? null;
+		if (empty($case)) {
+			WP_CLI::error('Please provide a test case name as the first argument.', $exit = false);
+			return;
+		}
 
-		//replace to testeroid_tests --case=""
+		$tests = apply_filters('testeroid_tests', []);
+		if (! isset($tests[$case])) {
+			WP_CLI::error('Test case not found: '.$case, $exit = false);
+			return;
+		}
+
+		$test = $tests[$case];
+		if (! is_callable($test)) {
+			WP_CLI::error('Test case callback is not callable: '.$case, $exit = false);
+			return;
+		}
+
+		$result = $test();
+		if ($result) {
+			WP_CLI::success('Test case passed: '.$case);
+		} else {
+			WP_CLI::error('Test case failed: '.$case);
+		}
 	});
 }
 
