@@ -13,22 +13,31 @@ use Kint\Kint;
 if (! \function_exists('dd')) {
 	function dd(...$args)
 	{
-		// Kint::$mode_default = Kint::MODE_TEXT;
-		foreach ($args as $item) {
-			echo '<pre>';
-			var_dump($item);
-			echo '</pre>';
-		}
+		//if wp cli
+		if (defined('WP_CLI') && WP_CLI) {
+			s(...$args);
+			exit;
+		} else {
+			foreach ($args as $item) {
+				echo '<pre>';
+				var_dump($item);
+				echo '</pre>';
+			}
 
-		//get backtrace
-		$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-		if (isset($bt[1])) {
-			$caller = $bt[1];
-			echo '<pre>';
-			echo "\nCalled from {$caller['file']}:{$caller['line']}\n";
-			echo '</pre>';
+			//get backtrace
+			$bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+			if (isset($bt[0]['file'])) {
+				$caller = $bt[0];
+				$caller['line'] = $caller['line'] ?? '';
+				echo '<pre>';
+				echo "\nCalled from {$caller['file']}:{$caller['line']}\n";
+				echo '</pre>';
+			}
 		}
 	}
+	
+	Kint::$aliases[] = 'dd';
+
 }
 
 function dd_only_admins(...$args)

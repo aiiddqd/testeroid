@@ -16,54 +16,7 @@ if (! function_exists('dd')) {
 if (class_exists('WP_CLI')) {
 
 	WP_CLI::add_command('testeroid', function ($terms, $args) {
-
-		WP_CLI::log('Testeroid is running');
-
-		/**
-		 * @var array $tests
-		 * @var string $test['case']
-		 * @var callable $test['callback']
-		 * @var bool $test['active']
-		 * @var string $test['group']
-		 * @var array $test['debug_backtrace']
-		 */
-
-		$tests = apply_filters('testeroid_tests', []);
-		$results = [];
-
-		if (isset($args['case'])) {
-			if (isset($tests[$args['case']])) {
-				if (is_callable($tests[$args['case']])) {
-					$testSingle = $tests[$args['case']];
-					$case = $args['case'];
-
-				} else {
-					$testSingle = $tests[$args['case']]['callback'];
-					$case = $args['case'];
-				}
-			} else {
-				WP_CLI::error('Test case not found: '.$args['case'], $exit = false);
-				return;
-			}
-
-			if ($testSingle) {
-				$results[] = handleTest($testSingle, $case ?? null);
-			}
-
-		} else {
-
-			foreach ($tests as $test) {
-				if (empty($test['active'])) {
-					continue;
-				}
-
-				if (is_callable($test['callback'])) {
-					$results[] = handleTest($test);
-				}
-			}
-		}
-
-
+		$results = testing($terms, $args);
 		$is_success = ! in_array(false, array_column($results, 'success'), true);
 
 		var_dump($results);
@@ -73,11 +26,10 @@ if (class_exists('WP_CLI')) {
 		} else {
 			WP_CLI::error('Testeroid is fail');
 		}
-
 	});
 
-	WP_CLI::add_command('test', function ($terms, $args) {
-		// $results = testing($terms, $args);
+	WP_CLI::add_command('ttest', function ($terms, $args) {
+		dd($terms, $args);
 
 		//replace to testeroid_tests --case=""
 	});
@@ -140,95 +92,56 @@ function handleTest($test, $case = null)
 }
 
 
-// @todo - delete or replace to testeroid_tests
 function testing($terms, $args)
 {
+	WP_CLI::log('Testeroid is running');
 
-	global $test_results, $testerod_tests;
+	/**
+	 * @var array $tests
+	 * @var string $test['case']
+	 * @var callable $test['callback']
+	 * @var bool $test['active']
+	 * @var string $test['group']
+	 * @var array $test['debug_backtrace']
+	 */
 
-	if (isset($args['filter'])) {
-		$text = $args['filter'];
-	}
+	$tests = apply_filters('testeroid_tests', []);
+	$results = [];
 
-	$path = __DIR__.'/includes/';
-	if (defined('TESTEROID_TESTS_PATH')) {
-		$path = trailingslashit(TESTEROID_TESTS_PATH);
-	}
+	if (isset($args['case'])) {
+		if (isset($tests[$args['case']])) {
+			if (is_callable($tests[$args['case']])) {
+				$testSingle = $tests[$args['case']];
+				$case = $args['case'];
 
-	if (isset($terms[0])) {
-		$term = $terms[0];
-		if (str_ends_with($term, '.php')) {
-			$path_pattern_test = $path_pattern = trailingslashit($path).$term;
-			if (file_exists($path_pattern_test)) {
-				require_once $path_pattern_test;
 			} else {
-				WP_CLI::error('Tests no found: '.$path_pattern_test, $exit = false);
+				$testSingle = $tests[$args['case']]['callback'];
+				$case = $args['case'];
 			}
 		} else {
-			WP_CLI::error('File name shoud be php format. '.$term, $exit = false);
+			WP_CLI::error('Test case not found: '.$args['case'], $exit = false);
+			return;
 		}
+
+		if ($testSingle) {
+			$results[] = handleTest($testSingle, $case ?? null);
+		}
+
 	} else {
-		$path_pattern = trailingslashit($path).'*.php';
 
-		foreach (glob($path_pattern) as $php_include) {
-			require_once($php_include);
-		}
-	}
-
-	if (empty($testerod_tests)) {
-		WP_CLI::error('No tests. '.$term, $exit = false);
-	}
-
-
-	$progress = \WP_CLI\Utils\make_progress_bar('Testing', count($testerod_tests), $interval = 1);
-
-	if (empty($test_results)) {
-		$test_results = [
-			'success' => 0,
-			'fail' => 0,
-			'fails' => [],
-		];
-	}
-
-	foreach ($testerod_tests as $test) {
-		$progress->tick();
-
-		if (isset($text)) {
-			if ($text !== $test['text']) {
+		foreach ($tests as $test) {
+			if (empty($test['active'])) {
 				continue;
 			}
-		}
 
-		if ($test['active']) {
-
-			try {
-				$result = call_user_func($test['callback']);
-				if ($result) {
-					$test_results['success']++;
-				} else {
-					$test_results['fail']++;
-
-					$msg = $test['text'];
-
-					if (isset($test['debug_backtrace'][0])) {
-						$log = $test['debug_backtrace'][0];
-						$msg .= ' | File: '.$log['file'].":".$log['line'];
-					}
-
-					$test_results['fails'][] = $msg;
-
-				}
-			} catch (Throwable $th) {
-				$test_results['fail']++;
-				$test_results['fails'][] = $test['text'].'; '.$th->getMessage().'; '.$th->getFile().':'.$th->getLine();
+			if (is_callable($test['callback'])) {
+				$results[] = handleTest($test);
 			}
 		}
 	}
 
-	$progress->finish();
 
-
-	return $test_results;
+	return $results;
 }
 
 
