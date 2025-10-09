@@ -1,0 +1,24 @@
+name: zip file to release artifacts
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        if: github.ref_type == 'tag'
+      - name: Remove files from list .distignore
+        run: |
+          xargs -a .distignore rm -rf
+      - name: Create ZIP
+        run: |
+          zip -r oembed-widget-for-telegram-posts-${{ github.ref_name }}.zip .
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
+        with:
+          files: oembed-widget-for-telegram-posts-${{ github.ref_name }}.zip
+          name: ${{ github.ref_name }}
