@@ -15,10 +15,10 @@ jobs:
           xargs -a .distignore rm -rf
       - name: Create ZIP
         run: |
-          zip -r oembed-widget-for-telegram-posts-${{ github.ref_name }}.zip .
+          zip -r ${{ github.event.repository.name }}-${{ github.ref_name }}.zip .
       - name: Create Release
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'
         with:
-          files: oembed-widget-for-telegram-posts-${{ github.ref_name }}.zip
+          files: ${{ github.event.repository.name }}-${{ github.ref_name }}.zip
           name: ${{ github.ref_name }}
