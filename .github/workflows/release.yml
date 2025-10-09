@@ -9,16 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        if: github.ref_type == 'tag'
       - name: Remove files from list .distignore
         run: |
           xargs -a .distignore rm -rf
       - name: Create ZIP
         run: |
           zip -r ${{ github.event.repository.name }}-${{ github.ref_name }}.zip .
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        if: github.ref_type == 'tag'
+        working-directory: ${{ github.workspace }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          files: ${{ github.event.repository.name }}-${{ github.ref_name }}.zip
-          name: ${{ github.ref_name }}
+          name: ${{ github.event.repository.name }}-${{ github.ref_name }}
+          path: ${{ github.event.repository.name }}-${{ github.ref_name }}.zip
