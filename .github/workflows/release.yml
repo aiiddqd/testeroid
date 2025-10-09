@@ -11,10 +11,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: Remove files from list .distignore
         run: |
-          xargs -a .distignore rm -rf
       - name: Create ZIP
         run: |
-          zip -r ${{ github.event.repository.name }}-${{ github.ref_name }}.zip .
+          xargs -a .distignore rm -rf
+          mkdir -p ${{ github.event.repository.name }}
+          shopt -s dotglob
+          mv * ${{ github.event.repository.name }}/
+          shopt -u dotglob
+          zip -r ${{ github.event.repository.name }}-${{ github.ref_name }}.zip ${{ github.event.repository.name }}/
         working-directory: ${{ github.workspace }}
       - name: Upload artifact to release page
         uses: softprops/action-gh-release@v2
