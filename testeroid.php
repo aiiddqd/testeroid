@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: @ Testeroid
+ * Plugin Name: Testeroid
  * Description: Simple auto tests & TDD with WP CLI
- * Version: 0.9.250926
+ * Version: 0.9.251009
  */
 
 namespace Testeroid;
