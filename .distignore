@@ -1,0 +1,5 @@
+.wp-env.json
+package.json
+.git
+.github
+.distignore
