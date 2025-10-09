@@ -16,7 +16,8 @@ jobs:
           xargs -a .distignore rm -rf
           mkdir -p ${{ github.event.repository.name }}
           ls -la
-          mv !( ${{ github.event.repository.name }} ) ${{ github.event.repository.name }}/
+          shopt -s extglob
+          mv !("${{ github.event.repository.name }}") ${{ github.event.repository.name }}/
           zip -r ${{ github.event.repository.name }}-${{ github.ref_name }}.zip ${{ github.event.repository.name }}/
         working-directory: ${{ github.workspace }}
       - name: Upload artifact to release page
