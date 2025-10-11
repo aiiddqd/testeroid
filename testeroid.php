@@ -36,6 +36,7 @@ if (class_exists('WP_CLI')) {
 		}
 
 		$tests = apply_filters('testeroid_tests', []);
+		
 		if (! isset($tests[$case])) {
 			WP_CLI::error('Test case not found: '.$case, $exit = false);
 			return;
