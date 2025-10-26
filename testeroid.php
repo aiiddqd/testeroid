@@ -13,7 +13,7 @@ if (! function_exists('dd')) {
 	require_once __DIR__.'/includes/dd.php';
 }
 
-if (class_exists('WP_CLI')) {
+add_action('wp_cli_init', function () {
 
 	WP_CLI::add_command('testeroid', function ($terms, $args) {
 		$results = testing($terms, $args);
@@ -29,6 +29,7 @@ if (class_exists('WP_CLI')) {
 	});
 
 	WP_CLI::add_command('ttest', function ($terms, $args) {
+
 		$case = $terms[0] ?? null;
 		if (empty($case)) {
 			WP_CLI::error('Please provide a test case name as the first argument.', $exit = false);
@@ -36,7 +37,7 @@ if (class_exists('WP_CLI')) {
 		}
 
 		$tests = apply_filters('testeroid_tests', []);
-		
+
 		if (! isset($tests[$case])) {
 			WP_CLI::error('Test case not found: '.$case, $exit = false);
 			return;
@@ -55,8 +56,7 @@ if (class_exists('WP_CLI')) {
 			WP_CLI::error('Test case failed: '.$case);
 		}
 	});
-}
-
+});
 
 function handleTest($test, $case = null)
 {
