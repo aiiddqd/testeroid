@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Testeroid
  * Description: Simple auto tests & TDD with WP CLI
- * Version: 0.9.251009
+ * Version: 0.9.251025
  */
 
 namespace Testeroid;
@@ -13,8 +13,7 @@ if (! function_exists('dd')) {
 	require_once __DIR__.'/includes/dd.php';
 }
 
-add_action('wp_cli_init', function () {
-
+if (class_exists('WP_CLI')) {
 	WP_CLI::add_command('testeroid', function ($terms, $args) {
 		$results = testing($terms, $args);
 		$is_success = ! in_array(false, array_column($results, 'success'), true);
@@ -56,7 +55,9 @@ add_action('wp_cli_init', function () {
 			WP_CLI::error('Test case failed: '.$case);
 		}
 	});
-});
+}
+
+
 
 function handleTest($test, $case = null)
 {
